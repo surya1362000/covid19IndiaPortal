@@ -112,7 +112,7 @@ app.get("/states/:stateId", authenticateToken, async (request, response) => {
 
 // API 4
 
-app.post("/districts/", async (request, response) => {
+app.post("/districts/", authenticateToken, async (request, response) => {
   const districtDetails = request.body;
   const {
     districtName,
@@ -180,18 +180,21 @@ app.delete(
 
 // API 7
 
-app.put("/districts/:districtId/", async (request, response) => {
-  const districtDetails = request.body;
-  const { districtId } = request.params;
-  const {
-    districtName,
-    stateId,
-    cases,
-    cured,
-    active,
-    deaths,
-  } = districtDetails;
-  const updateDistrictQuery = `UPDATE
+app.put(
+  "/districts/:districtId/",
+  authenticateToken,
+  async (request, response) => {
+    const districtDetails = request.body;
+    const { districtId } = request.params;
+    const {
+      districtName,
+      stateId,
+      cases,
+      cured,
+      active,
+      deaths,
+    } = districtDetails;
+    const updateDistrictQuery = `UPDATE
   district 
     
   SET 
@@ -206,9 +209,10 @@ app.put("/districts/:districtId/", async (request, response) => {
     WHERE
     district_id = ${districtId};`;
 
-  await db.run(updateDistrictQuery);
-  response.send("District Details Updated");
-});
+    await db.run(updateDistrictQuery);
+    response.send("District Details Updated");
+  }
+);
 
 // API 8
 
